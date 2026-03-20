@@ -6,6 +6,21 @@ const host = process.env.DB_HOST;
 const port = Number(process.env.DB_PORT || 4000);
 const dbSslEnv = process.env.DB_SSL;
 
+if (!host) {
+  throw new Error(
+    "DB_HOST is not set. Set DB_HOST/DB_PORT/DB_USER/DB_PASSWORD/DB_NAME in your environment variables (e.g. Vercel)."
+  );
+}
+if (!process.env.DB_USER) {
+  throw new Error("DB_USER is not set.");
+}
+if (typeof process.env.DB_PASSWORD === "undefined") {
+  throw new Error("DB_PASSWORD is not set.");
+}
+if (!process.env.DB_NAME) {
+  throw new Error("DB_NAME is not set.");
+}
+
 const shouldUseSsl =
   dbSslEnv === "true" ||
   (dbSslEnv !== "false" &&
