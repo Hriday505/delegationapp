@@ -14,6 +14,13 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const getErrorMessage = (err) => {
+    const data = err?.response?.data;
+    if (data?.message) return data.message;
+    if (typeof data === "string" && data.trim()) return data;
+    return err?.message || "Login failed";
+  };
+
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -30,7 +37,7 @@ export default function LoginPage() {
       await login(formData);
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

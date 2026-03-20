@@ -16,6 +16,13 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const getErrorMessage = (err) => {
+    const data = err?.response?.data;
+    if (data?.message) return data.message;
+    if (typeof data === "string" && data.trim()) return data;
+    return err?.message || "Registration failed";
+  };
+
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -33,7 +40,7 @@ export default function RegisterPage() {
       setSuccess("Registration successful. Please login.");
       setTimeout(() => navigate("/login"), 1000);
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed");
+      setError(getErrorMessage(err));
     }
   };
 

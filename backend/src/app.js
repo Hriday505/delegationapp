@@ -22,22 +22,20 @@ app.use(morgan("dev"));
 /*parse request*/
 app.use(express.json())
 
-/**allowing request from frontend */
+/** allowing request from frontend */
 const allowedOrigins = [
-  process.env.CLIENT_URL,
-  process.env.FRONTEND_URL,
-].filter(Boolean);
+  ...(process.env.CLIENT_URL || "").split(","),
+  ...(process.env.FRONTEND_URL || "").split(","),
+]
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 app.use(
   cors({
-    origin: function (origin, callback) {
+    origin: (origin, callback) => {
       if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      return callback(new Error("Not allowed by CORS"));
+      if (allowedOrigins.length === 0) return callback(null, true);
+      return callback(null, allowedOrigins.includes(origin));
     },
     credentials: true,
   })
